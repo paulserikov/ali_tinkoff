@@ -15,7 +15,7 @@
 			$scope.tcs_rates = {};
 			$scope.msg = "";
 
-			$http.get('http://127.0.0.1:3000/t').success(function(response) { 
+			$http.get('/t').success(function(response) { 
 				$scope.tcs_rates = response;
 				//$scope.calc_profit();
 			});
@@ -69,7 +69,8 @@
 			<h3> Как посчитали?</h3>
 			Курс доллара Aliexpress: {{cost_rub/cost_us | number:2}}<br>
 			Курс продажи доллара Тинькофф: {{tcs_rates.sell}}<br>
-			Ваша выгода: ({{cost_rub}}/{{cost_us}} - {{tcs_rates.sell}})*{{cost_us}} = {{(cost_rub/cost_us - tcs_rates.sell)*cost_us | number:2}}
+			Ваша выгода: ({{cost_rub}}/{{cost_us}} - {{tcs_rates.sell}})*{{cost_us}} = {{(cost_rub/cost_us - tcs_rates.sell)*cost_us | number:2}}<br>
+			Выгода в процентах к сумме покупки в рублях: {{ (((cost_rub/cost_us - tcs_rates.sell)*cost_us)/cost_rub)*100 | number:2 }}
 		</div>
 
 		<br><br>

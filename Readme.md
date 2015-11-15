@@ -23,3 +23,5 @@ morbo myapp.pl
 # How to run at production machine
 
 It's recommended to use https://bitbucket.org/serikov/mojo-nginx-deployer
+
+to add ssh key use `xclip -sel clip < ~/.ssh/id_rsa.pub`
