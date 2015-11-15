@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
 use Mojolicious::Lite;
 
+my $config = plugin 'Config';
+
 get '/' => sub {
   my $c = shift;
   $c->render(template => 'index');
