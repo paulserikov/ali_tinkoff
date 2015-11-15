@@ -1,0 +1,80 @@
+<!DOCTYPE HTML>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Tinkoff Ali calc</title>
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+	<script type="text/javascript" src="angular.min.js" ></script>
+	<script type="text/javascript">
+	(function(){
+		var app = angular.module('TinAli', [] );
+		app.controller('BenefitCalc', function($scope, $http) {
+			$scope.cost_rub = 43980.29;
+			$scope.cost_us = 640.0;
+			// $scope.abs = $window.Math.abs;
+			//$scope.Math = window.Math;
+			$scope.tcs_rates = {};
+			$scope.msg = "";
+
+			$http.get('http://127.0.0.1:3000/t').success(function(response) { 
+				$scope.tcs_rates = response;
+				//$scope.calc_profit();
+			});
+
+			 $scope.calc_profit = function() {
+			 	var i = $scope.cost_rub/$scope.cost_us - $scope.tcs_rates.sell;
+				if (i > 0) {
+					$scope.msg = "Оплатить долларовой картой Тинькофф выгодней!"
+				} else {
+					$scope.msg = "Купить на Aliexpress в рублях выгодней!"
+				}
+				
+				$scope.profit = ($scope.cost_rub/$scope.cost_us - $scope.tcs_rates.sell)*$scope.cost_us;
+			}
+		});
+
+		app.filter('abs', ['$window', function($window) {
+		  return function(n) {
+		    return $window.Math.abs($window.parseInt(n));
+		  };
+		}]);
+
+	})();
+	</script>
+ </head>
+
+ <body>
+ 	<div class="container" ng-app="TinAli">
+ 		
+ 		<div ng-controller="BenefitCalc as calc" class="jumbotron">
+ 			<h1>Купи на Aliexpress выгоднее</h1>
+ 			<p>Специальный калькулятор для владельцев долларовых карточек ТКС.Банка</p>
+			
+ 			<form class="form-horizontal">
+			  <div class="form-group">
+			    <label for="inputUSD" class="col-sm-4 control-label">Cтоимость товара на Aliexpress в рублях</label>
+			    <div class="col-sm-3">
+			      <input ng-model="cost_rub" type="number" class="form-control input-lg" id="inputRUB" placeholder="43980.29" ng-change="calc_profit()">
+			    </div>
+			  </div>
+			  <div class="form-group">
+			    <label for="inputRUB" class="col-sm-4 control-label">Cтоимость товара на Aliexpress в долларах</label>
+			    <div class="col-sm-3">
+			      <input ng-model="cost_us" type="number" class="form-control input-lg" id="inputUSD" placeholder="640" ng-change="calc_profit()">
+			    </div>
+			  </div>
+
+			<h2>{{msg}}</h2>
+			<h2>Ваша выгода: <b>{{ profit | abs }}</b> рублей </h2>
+
+			<h3> Как посчитали?</h3>
+			Курс доллара Aliexpress: {{cost_rub/cost_us | number:2}}<br>
+			Курс продажи доллара Тинькофф: {{tcs_rates.sell}}<br>
+			Ваша выгода: ({{cost_rub}}/{{cost_us}} - {{tcs_rates.sell}})*{{cost_us}} = {{(cost_rub/cost_us - tcs_rates.sell)*cost_us | number:2}}
+		</div>
+
+		<br><br>
+		<a href="https://tinkoffrates.ru/">Курсы других валют</a><br>
+		<a href="https://www.tinkoff.ru/api/v1/currency_rates/">API курсов валют Тинькофф Банка</a>
+    </div>
+ </body>
+</html>
